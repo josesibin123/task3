@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 15px;
+      width: 400px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+    .options li {
+      background: #333;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .options li:hover {
+      background: #444;
+    }
+    .options li.correct {
+      background: green;
+    }
+    .options li.wrong {
+      background: red;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #2575fc;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #1a5edb;
+    }
+    #score {
+      font-size: 18px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h2 id="question">Question Text</h2>
+  <ul class="options" id="options"></ul>
+  <button id="nextBtn">Next</button>
+  <p id="score"></p>
+</div>
+
+<script>
+const quizData = [
+  {
+    question: "Which language is used for web apps?",
+    options: ["Python", "JavaScript", "C++", "Java"],
+    answer: "JavaScript"
+  },
+  {
+    question: "What does HTML stand for?",
+    options: ["Hyper Trainer Marking Language", "Hyper Text Markup Language", "Hyper Text Marketing Language", "Hyper Text Markup Leveler"],
+    answer: "Hyper Text Markup Language"
+  },
+  {
+    question: "CSS is used for?",
+    options: ["Styling", "Database", "Programming", "Debugging"],
+    answer: "Styling"
+  },
+  {
+    question: "Which is not a programming language?",
+    options: ["Python", "HTML", "C#", "Java"],
+    answer: "HTML"
+  },
+  {
+    question: "Which company developed Java?",
+    options: ["Microsoft", "Sun Microsystems", "Google", "Apple"],
+    answer: "Sun Microsystems"
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+const scoreEl = document.getElementById("score");
+
+function loadQuestion() {
+  resetState();
+  let q = quizData[currentQuestion];
+  questionEl.textContent = q.question;
+  q.options.forEach(option => {
+    const li = document.createElement("li");
+    li.textContent = option;
+    li.onclick = () => checkAnswer(li, q.answer);
+    optionsEl.appendChild(li);
+  });
+}
+
+function resetState() {
+  nextBtn.style.display = "none";
+  optionsEl.innerHTML = "";
+}
+
+function checkAnswer(selected, correctAnswer) {
+  const allOptions = document.querySelectorAll(".options li");
+  allOptions.forEach(option => {
+    option.style.pointerEvents = "none"; 
+    if(option.textContent === correctAnswer){
+      option.classList.add("correct");
+    }
+  });
+  if(selected.textContent === correctAnswer){
+    score++;
+  } else {
+    selected.classList.add("wrong");
+  }
+  nextBtn.style.display = "block";
+}
+
+nextBtn.addEventListener("click", () => {
+  currentQuestion++;
+  if(currentQuestion < quizData.length){
+    loadQuestion();
+  } else {
+    showScore();
+  }
+});
+
+function showScore() {
+  questionEl.textContent = "Quiz Completed!";
+  optionsEl.innerHTML = "";
+  nextBtn.style.display = "none";
+  scoreEl.textContent = `Your Score: ${score} / ${quizData.length}`;
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
